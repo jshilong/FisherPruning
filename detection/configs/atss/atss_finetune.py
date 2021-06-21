@@ -53,20 +53,10 @@ model = dict(
                   nms=dict(type='nms', iou_threshold=0.6),
                   max_per_img=100))
 # optimizer
-optimizer = dict(type='SGD', lr=0.002, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
 
 custom_hooks = [
-    dict(
-        type='FisherPruningHook',
-        # In pruning process, you need set priority
-        # as 'LOWEST' to insure the pruning_hook is excused
-        # after optimizer_hook, in fintune process, you
-        # should set it as 'HIGHEST' to insure it excused
-        # before checkpoint_hook
-        pruning=True,
-        batch_size=2,
-        interval=10,
-        priority='LOWEST',
-    )
+    dict(type='FisherPruningHook',
+         pruning=False,
+         deploy_from='path to the pruned model')
 ]
-load_from = 'path to the baseline'  # noqa: E501

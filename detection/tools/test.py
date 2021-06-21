@@ -4,18 +4,19 @@ import os.path as osp
 import time
 import warnings
 
-import torch
-from mmdet.apis import multi_gpu_test, single_gpu_test
-from mmdet.datasets import (build_dataloader, build_dataset,
-                            replace_ImageToTensor)
-from mmdet.models import build_detector
-
 import mmcv
+import torch
+# register the FisherPruningHook to the `Registry('hook')`
+from fisher_pruning import FisherPruningHook  # noqa F401
 from mmcv import Config, DictAction
 from mmcv.cnn import fuse_conv_bn
 from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import (get_dist_info, init_dist, load_checkpoint,
                          wrap_fp16_model)
+from mmdet.apis import multi_gpu_test, single_gpu_test
+from mmdet.datasets import (build_dataloader, build_dataset,
+                            replace_ImageToTensor)
+from mmdet.models import build_detector
 
 
 def parse_args():
@@ -180,9 +181,22 @@ def main():
     # build the model and load checkpoint
     cfg.model.train_cfg = None
     model = build_detector(cfg.model, test_cfg=cfg.get('test_cfg'))
+
+    if 'custom_hooks' in cfg:
+        for hook in cfg.custom_hooks:
+            if hook.type == 'FisherPruningHook':
+                hook_cfg = hook.copy()
+                hook_cfg.pop('priority', None)
+                from mmcv.runner.hooks import HOOKS
+                hook_cls = HOOKS.get(hook_cfg['type'])
+                if hasattr(hook_cls, 'after_build_model'):
+                    pruning_hook = mmcv.build_from_cfg(hook_cfg, HOOKS)
+                    pruning_hook.after_build_model(model)
+
     fp16_cfg = cfg.get('fp16', None)
     if fp16_cfg is not None:
         wrap_fp16_model(model)
+
     checkpoint = load_checkpoint(model, args.checkpoint, map_location='cpu')
     if args.fuse_conv_bn:
         model = fuse_conv_bn(model)

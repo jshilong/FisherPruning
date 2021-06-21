@@ -43,22 +43,12 @@ model = dict(
                    allowed_border=-1,
                    pos_weight=-1,
                    debug=False))
-optimizer = dict(type='SGD', lr=0.002, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(_delete_=True,
                         grad_clip=dict(max_norm=10, norm_type=2))
 
 custom_hooks = [
-    dict(
-        type='FisherPruningHook',
-        # In pruning process, you need set priority
-        # as 'LOWEST' to insure the pruning_hook is excused
-        # after optimizer_hook, in fintune process, you
-        # should set it as 'HIGHEST' to insure it excused
-        # before checkpoint_hook
-        pruning=True,
-        batch_size=2,
-        interval=10,
-        priority='LOWEST',
-    )
+    dict(type='FisherPruningHook',
+         pruning=False,
+         deploy_from='path to the pruned model')
 ]
-load_from = 'https://download.openmmlab.com/mmdetection/v2.0/fsaf/fsaf_r50_fpn_1x_coco/fsaf_r50_fpn_1x_coco-94ccc51f.pth'  # noqa: E501

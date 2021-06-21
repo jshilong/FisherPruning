@@ -8,13 +8,12 @@ import torch
 import torch.distributed as dist
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.nn import Conv2d
-from torch.nn.modules.batchnorm import _BatchNorm
-
 from mmcv.runner import HOOKS
 from mmcv.runner.checkpoint import load_checkpoint, save_checkpoint
 from mmcv.runner.dist_utils import master_only
 from mmcv.runner.hooks import Hook
+from torch.nn import Conv2d
+from torch.nn.modules.batchnorm import _BatchNorm
 
 # These grad_fn pattern are flags of specific a nn.Module
 CONV = ('ThnnConv2DBackward', 'CudnnConvolutionBackward')
