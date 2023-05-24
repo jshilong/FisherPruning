@@ -127,13 +127,12 @@ Coming soon.
 ### Please cite our paper in your publications if it helps your research.
 
 ```
-@InProceedings{liu2021group,
-  title = {Group Fisher Pruning for Practical Network Compression},
-  author =       {Liu, Liyang and Zhang, Shilong and Kuang, Zhanghui and Zhou, Aojun and Xue, Jing-Hao and Wang, Xinjiang and Chen, Yimin and Yang, Wenming and Liao, Qingmin and Zhang, Wayne},
-  booktitle = {Proceedings of the 38th International Conference on Machine Learning},
-  year = {2021},
-  series = {Proceedings of Machine Learning Research},
-  month = {18--24 Jul},
-  publisher ={PMLR},
+@inproceedings{liu2021group,
+  title={Group fisher pruning for practical network compression},
+  author={Liu, Liyang and Zhang, Shilong and Kuang, Zhanghui and Zhou, Aojun and Xue, Jing-Hao and Wang, Xinjiang and Chen, Yimin and Yang, Wenming and Liao, Qingmin and Zhang, Wayne},
+  booktitle={International Conference on Machine Learning},
+  pages={7021--7032},
+  year={2021},
+  organization={PMLR}
 }
 ```
